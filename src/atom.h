@@ -67,7 +67,7 @@ Result<T> as(const Atom x) {
   if (auto v = std::get_if<T>(&x)) {
     return *v;
   } else {
-    return Error{101, "unknown error"};
+    return errors::cant_convert_atom();
   }
 }
 

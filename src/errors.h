@@ -15,6 +15,8 @@ struct Error {
 
 namespace errors {
 
+static Error cant_convert_atom() { return Error{100, "Cannot convert an atom"}; }
+
 } // namespace fpat::errors
 } // namespace fpat
 
