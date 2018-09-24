@@ -54,12 +54,12 @@ bool is_a(const Atom &x) {
   return std::holds_alternative<T>(x);
 }
 
-constexpr auto is_number = is_a<Num>;
-constexpr auto is_string = is_a<Str>;
-constexpr auto is_vector = is_a<Vec>;
-constexpr auto is_matrix = is_a<Mat>;
+constexpr auto is_num = is_a<Num>;
+constexpr auto is_str = is_a<Str>;
+constexpr auto is_vec = is_a<Vec>;
+constexpr auto is_mat = is_a<Mat>;
 constexpr auto is_bpf = is_a<Bpf>;
-constexpr auto is_dict = is_a<Dic>;
+constexpr auto is_dic = is_a<Dic>;
 
 template<typename T>
 Result<T> as(const Atom x) {
@@ -70,12 +70,12 @@ Result<T> as(const Atom x) {
   }
 }
 
-constexpr auto as_number = as<Num>;
-constexpr auto as_string = as<Str>;
-constexpr auto as_vector = as<Vec>;
-constexpr auto as_matrix = as<Mat>;
+constexpr auto as_num = as<Num>;
+constexpr auto as_str = as<Str>;
+constexpr auto as_vec = as<Vec>;
+constexpr auto as_mat = as<Mat>;
 constexpr auto as_bpf = as<Bpf>;
-constexpr auto as_dict = as<Dic>;
+constexpr auto as_dic = as<Dic>;
 
 ////
 //// atom string representation
