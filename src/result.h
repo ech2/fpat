@@ -20,8 +20,8 @@ template<typename T>
 class Result : private std::variant<T, Error> {
  public:
   Result() = delete;
-  Result(T x) : std::variant<T, Error>(x) {};
-  Result(Error x) : std::variant<T, Error>(x) {};
+  explicit Result(T x) : std::variant<T, Error>(x) {};
+  explicit Result(Error x) : std::variant<T, Error>(x) {};
 
   bool is_error() const {
     return std::get_if<0>(this) == nullptr;
@@ -34,6 +34,14 @@ class Result : private std::variant<T, Error> {
   Error *get_error_n() {
     assert(std::get_if<1>(this) != nullptr);
     return std::get_if<1>(this);
+  }
+
+  std::optional<T> get_value() {
+    if (auto v = get_value_n()) {
+      return std::make_optional(*v);
+    } else {
+      return std::nullopt;
+    }
   }
 
   T get_value_or(T other) {
