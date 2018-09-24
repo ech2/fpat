@@ -24,5 +24,14 @@ int main() {
 //  std::cout << match<Num, Str>(avec) << std::endl;
 //  std::cout << match_exact<Num, Str>(avec) << std::endl;
 
+//  std::cout << atom_type_str<Num> << std::endl;
+//  std::cout << str_str << std::endl;
+//  std::cout << str_str << std::endl;
+
+//  auto v = Vec();
+//  std::cout << *vec_str(v, p) << std::endl;
+//  std::cout << *num_str(1.0f, p) << std::endl;
+
+
   return 0;
 }

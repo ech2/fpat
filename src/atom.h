@@ -14,6 +14,7 @@
 
 #include "eigen3/Eigen/Dense"
 #include "llvm/Support/StringPool.h"
+#include "llvm/Support/FormatVariadic.h"
 
 #include "result.h"
 
@@ -75,6 +76,73 @@ constexpr auto as_vector = as<Vec>;
 constexpr auto as_matrix = as<Mat>;
 constexpr auto as_bpf = as<Bpf>;
 constexpr auto as_dict = as<Dic>;
+
+////
+//// atom string representation
+////
+
+template<typename T>
+constexpr const char *atom_type_str = []() {
+  if constexpr (std::is_same_v<T, Num>) {
+    return "num";
+  }
+  if constexpr (std::is_same_v<T, Str>) {
+    return "str";
+  }
+  if constexpr (std::is_same_v<T, Vec>) {
+    return "vec";
+  }
+  if constexpr (std::is_same_v<T, Mat>) {
+    return "mat";
+  }
+  if constexpr (std::is_same_v<T, Bpf>) {
+    return "bpf";
+  }
+  if constexpr (std::is_same_v<T, Dic>) {
+    return "dic";
+  }
+}(); // <-- NB: function invocation
+
+constexpr auto num_type_str = atom_type_str<Num>;
+constexpr auto str_type_str = atom_type_str<Str>;
+constexpr auto vec_type_str = atom_type_str<Vec>;
+constexpr auto mat_type_str = atom_type_str<Mat>;
+constexpr auto bpf_type_str = atom_type_str<Bpf>;
+constexpr auto dic_type_str = atom_type_str<Dic>;
+
+template<typename T>
+llvm::PooledStringPtr atom_str(T atom_v, llvm::StringPool pool) {
+  if constexpr (std::is_same_v<T, Num>) {
+    return pool.intern(std::to_string(atom_v));
+  }
+  if constexpr (std::is_same_v<T, Str>) {
+    return atom_v;
+  }
+  auto ptr = reinterpret_cast<intptr_t>(&atom_v);
+  if constexpr (std::is_same_v<T, Vec>) {
+    auto s = llvm::formatv("vec_{0}", ptr).str();
+    return pool.intern(s);
+  }
+  if constexpr (std::is_same_v<T, Mat>) {
+    auto s = llvm::formatv("mat_{0}", ptr).str();
+    return pool.intern(s);
+  }
+  if constexpr (std::is_same_v<T, Bpf>) {
+    auto s = llvm::formatv("bpf_{0}", ptr).str();
+    return pool.intern(s);
+  }
+  if constexpr (std::is_same_v<T, Dic>) {
+    auto s = llvm::formatv("dic_{0}", ptr).str();
+    return pool.intern(s);
+  }
+}
+
+constexpr auto num_str = atom_str<Num>;
+constexpr auto str_str = atom_str<Str>;
+constexpr auto vec_str = atom_str<Vec>;
+constexpr auto mat_str = atom_str<Mat>;
+constexpr auto bpf_str = atom_str<Bpf>;
+constexpr auto dic_str = atom_str<Dic>;
 
 ////
 //// match and match_exact
