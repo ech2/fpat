@@ -78,7 +78,31 @@ constexpr auto as_matrix = as<Mat>;
 constexpr auto as_bpf = as<Bpf>;
 constexpr auto as_dict = as<Dic>;
 
+////
+//// match and match_exact
+////
 
+template<typename...Ts, size_t...Ns>
+bool match_impl(std::index_sequence<Ns...>, const AtomVec &avec) {
+  auto m = {is_a<Ts>(avec[Ns])...};
+  return std::all_of(m.begin(), m.end(), [](bool x) { return x; });
+}
+
+template<typename...Ts>
+bool match(const AtomVec &avec) {
+  if (avec.size() < sizeof...(Ts)) {
+    return false;
+  }
+  return match_impl<Ts...>(std::make_index_sequence<sizeof...(Ts)>(), avec);
+}
+
+template<typename...Ts>
+bool match_exact(const AtomVec &avec) {
+  if (avec.size() != sizeof...(Ts)) {
+    return false;
+  }
+  match<Ts...>(avec);
+}
 }; // namespace fpat
 
 #endif  // FORMAL_PATCH_ATOM_H
