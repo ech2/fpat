@@ -50,7 +50,7 @@ constexpr bool is_atom_type =
         || std::is_same_v<T, Bpf>;
 
 template<typename T, typename = std::enable_if<is_atom_type<T>>>
-bool is_a(const Atom &x) {
+bool is_a(const Atom &x) noexcept {
   return std::holds_alternative<T>(x);
 }
 
@@ -188,7 +188,7 @@ bool match_exact(const AtomVec &avec) {
   if (avec.size() != sizeof...(Ts)) {
     return false;
   }
-  match<Ts...>(avec);
+  return match_impl<Ts...>(std::make_index_sequence<sizeof...(Ts)>(), avec);
 }
 }; // namespace fpat
 
