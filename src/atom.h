@@ -78,6 +78,30 @@ constexpr auto as_bpf = as<Bpf>;
 constexpr auto as_dic = as<Dic>;
 
 ////
+//// atom construction
+////
+
+Str make_str(const char *str, llvm::StringPool &pool) { return pool.intern(str); }
+
+template<typename T, typename...Args>
+T make_atom_ptr_type(Args &&... args) {
+  using UnderlyingType = typename T::element_type;
+  return std::make_shared<UnderlyingType>(args...);
+}
+
+template<typename...Args>
+auto make_vec(Args &&...args) { return make_atom_ptr_type<Vec, Args...>(std::forward<Args...>(args)...); }
+
+template<typename...Args>
+auto make_mat(Args &&...args) { return make_atom_ptr_type<Mat, Args...>(std::forward<Args...>(args)...); }
+
+template<typename...Args>
+auto make_bpf(Args &&...args) { return make_atom_ptr_type<Bpf, Args...>(std::forward<Args...>(args)...); }
+
+template<typename...Args>
+auto make_dic(Args &&...args) { return make_atom_ptr_type<Dic, Args...>(std::forward<Args...>(args)...); }
+
+////
 //// atom string representation
 ////
 
