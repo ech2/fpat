@@ -28,10 +28,21 @@ int main() {
 //  std::cout << str_str << std::endl;
 //  std::cout << str_str << std::endl;
 
-//  auto v = Vec();
-//  std::cout << *vec_str(v, p) << std::endl;
-//  std::cout << *num_str(1.0f, p) << std::endl;
+//  auto v1 = std::make_shared<Eigen::Matrix<Num, Eigen::Dynamic, 1>>(100);
+//  auto v1_size = v1->size();
+//  auto v2 = make_atom_ptr_type<Vec>(100);
+//  auto v2_size = v2->size();
+//  auto v3 = make_vec(100);
+//  auto v3_size = v3->size();
 
+//FIXME: adresses returned by atom_str_dyn should be equal to Vec’s inner matrix addresses
+//  auto t1 = make_vec(100);
+//  auto t2 = make_vec(101);
+//  auto t1_ps = atom_str_dyn(t1, p);
+//  std::cout << *t1_ps << std::endl;
+//  auto t2_ps = atom_str_dyn(t2, p);
+//  std::cout << *t1_ps << std::endl;  // t1_ps is different here!
+//  std::cout << *t2_ps << std::endl;
 
   return 0;
 }
