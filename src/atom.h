@@ -135,29 +135,19 @@ constexpr auto bpf_type_str = atom_type_str<Bpf>;
 constexpr auto dic_type_str = atom_type_str<Dic>;
 
 template<typename T>
-llvm::PooledStringPtr atom_str(T atom_v, llvm::StringPool pool) {
+Str atom_str(const T &atom_v, llvm::StringPool pool) {
   if constexpr (std::is_same_v<T, Num>) {
     return pool.intern(std::to_string(atom_v));
-  }
-  if constexpr (std::is_same_v<T, Str>) {
+  } else if constexpr (std::is_same_v<T, Str>) {
     return atom_v;
-  }
-  auto ptr = reinterpret_cast<intptr_t>(&atom_v);
-  if constexpr (std::is_same_v<T, Vec>) {
-    auto s = llvm::formatv("vec_{0}", ptr).str();
+  } else if (is_atom_type<T>){
+    // FIXME this gives incoherent addresses
+    auto ptr = reinterpret_cast<intptr_t >(atom_v.get());
+    auto type_str = atom_type_str<T>;
+    auto s = llvm::formatv("{0}_{1}", type_str, ptr).str();
     return pool.intern(s);
-  }
-  if constexpr (std::is_same_v<T, Mat>) {
-    auto s = llvm::formatv("mat_{0}", ptr).str();
-    return pool.intern(s);
-  }
-  if constexpr (std::is_same_v<T, Bpf>) {
-    auto s = llvm::formatv("bpf_{0}", ptr).str();
-    return pool.intern(s);
-  }
-  if constexpr (std::is_same_v<T, Dic>) {
-    auto s = llvm::formatv("dic_{0}", ptr).str();
-    return pool.intern(s);
+  } else {
+    __builtin_unreachable();
   }
 }
 
@@ -167,6 +157,13 @@ constexpr auto vec_str = atom_str<Vec>;
 constexpr auto mat_str = atom_str<Mat>;
 constexpr auto bpf_str = atom_str<Bpf>;
 constexpr auto dic_str = atom_str<Dic>;
+
+Str atom_str_dyn(const Atom &atom, llvm::StringPool &pool) noexcept {
+  return std::visit([&pool](auto &arg) -> Str {
+    using T = std::decay_t<decltype(arg)>;
+    return atom_str<T>(arg, pool);  // TODO test this const
+  }, atom);
+}
 
 ////
 //// match and match_exact
