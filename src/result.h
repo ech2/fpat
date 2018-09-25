@@ -24,6 +24,10 @@ class Result : private std::variant<T, Error> {
   Result(const T x) : std::variant<T, Error>(x) {};
   Result(Error x) : std::variant<T, Error>(x) {};
 
+  operator bool() const noexcept {
+    return !is_error();
+  }
+
   bool is_error() const noexcept {
     return std::get_if<0>(this) == nullptr;
   }

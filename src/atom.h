@@ -62,7 +62,7 @@ constexpr auto is_bpf = is_a<Bpf>;
 constexpr auto is_dic = is_a<Dic>;
 
 template<typename T>
-Result<T> as(const Atom x) {
+Result<T> as(const Atom x) noexcept {
   if (auto v = std::get_if<T>(&x)) {
     return *v;
   } else {
