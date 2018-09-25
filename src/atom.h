@@ -31,7 +31,7 @@ using Mat = std::shared_ptr<Eigen::Matrix<Num, Eigen::Dynamic, Eigen::Dynamic>>;
 using Bpf = std::shared_ptr<Eigen::Matrix<Num, Eigen::Dynamic, 2>>;
 
 // TODO unit test to check that every other atom type is included into this type signature
-using Dic = std::map<Str, std::variant<Num, Str, Vec, Mat, Bpf>>;
+using Dic = std::shared_ptr<std::map<Str, std::variant<Num, Str, Vec, Mat, Bpf>>>;
 
 using Atom = std::variant<Num, Str, Vec, Mat, Bpf, Dic>;
 using AtomVec = std::vector<Atom>;
