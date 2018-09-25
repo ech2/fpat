@@ -109,20 +109,15 @@ template<typename T>
 constexpr const char *atom_type_str = []() {
   if constexpr (std::is_same_v<T, Num>) {
     return "num";
-  }
-  if constexpr (std::is_same_v<T, Str>) {
+  } else if constexpr (std::is_same_v<T, Str>) {
     return "str";
-  }
-  if constexpr (std::is_same_v<T, Vec>) {
+  } else if constexpr (std::is_same_v<T, Vec>) {
     return "vec";
-  }
-  if constexpr (std::is_same_v<T, Mat>) {
+  } else if constexpr (std::is_same_v<T, Mat>) {
     return "mat";
-  }
-  if constexpr (std::is_same_v<T, Bpf>) {
+  } else if constexpr (std::is_same_v<T, Bpf>) {
     return "bpf";
-  }
-  if constexpr (std::is_same_v<T, Dic>) {
+  } else if constexpr (std::is_same_v<T, Dic>) {
     return "dic";
   }
 }(); // <-- NB: function invocation
@@ -140,7 +135,7 @@ Str atom_str(const T &atom_v, llvm::StringPool pool) {
     return pool.intern(std::to_string(atom_v));
   } else if constexpr (std::is_same_v<T, Str>) {
     return atom_v;
-  } else if (is_atom_type<T>){
+  } else if constexpr (is_atom_type<T>) {
     // FIXME this gives incoherent addresses
     auto ptr = reinterpret_cast<intptr_t >(atom_v.get());
     auto type_str = atom_type_str<T>;
