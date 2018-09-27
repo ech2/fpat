@@ -90,16 +90,24 @@ T make_atom_ptr_type(Args &&... args) {
 }
 
 template<typename...Args>
-auto make_vec(Args &&...args) { return make_atom_ptr_type<Vec, Args...>(std::forward<Args...>(args)...); }
+auto make_vec(Args &&...args) {
+  return make_atom_ptr_type<Vec, Args...>(std::forward<Args...>(args)...);
+}
 
 template<typename...Args>
-auto make_mat(Args &&...args) { return make_atom_ptr_type<Mat, Args...>(std::forward<Args...>(args)...); }
+auto make_mat(Args &&...args) {
+  return make_atom_ptr_type<Mat, Args...>(std::forward<Args...>(args)...);
+}
 
 template<typename...Args>
-auto make_bpf(Args &&...args) { return make_atom_ptr_type<Bpf, Args...>(std::forward<Args...>(args)...); }
+auto make_bpf(Args &&...args) {
+  return make_atom_ptr_type<Bpf, Args...>(std::forward<Args...>(args)...);
+}
 
 template<typename...Args>
-auto make_dic(Args &&...args) { return make_atom_ptr_type<Dic, Args...>(std::forward<Args...>(args)...); }
+auto make_dic(Args &&...args) {
+  return make_atom_ptr_type<Dic, Args...>(std::forward<Args...>(args)...);
+}
 
 ////
 //// atom string representation
@@ -185,6 +193,36 @@ bool match_exact(const AtomVec &avec) {
   }
   return match_impl<Ts...>(std::make_index_sequence<sizeof...(Ts)>(), avec);
 }
+
+template<typename...Ts, size_t...Ns>
+Result<std::tuple<Ts...>> as_tuple_impl(const AtomVec &avec, std::index_sequence<Ns...>) {
+  using RetType = std::tuple<Ts...>;
+
+  auto check = {is_a<Ts>(avec[Ns])...};
+
+  if (std::all_of(check.begin(), check.end(), [](bool x) -> bool { return x; })) {
+    return std::make_tuple(std::get<Ts>(avec[Ns])...);
+  } else {
+    return errors::as_tuple_cant_find_all_types();
+  }
+};
+
+template<typename...Ts>
+Result<std::tuple<Ts...>> as_tuple(const AtomVec &avec) {
+  if (avec.size() < sizeof...(Ts)) {
+    return errors::as_tuple_avec_is_too_short();
+  }
+  return as_tuple_impl<Ts...>(avec, std::make_index_sequence<sizeof...(Ts)>());
+}
+
+template<typename...Ts>
+Result<std::tuple<Ts...>> as_tuple_exact(const AtomVec &avec) {
+  if (avec.size() != sizeof...(Ts)) {
+    return errors::as_tuple_avec_is_not_same_length();
+  }
+  return as_tuple_impl<Ts...>(avec, std::make_index_sequence<sizeof...(Ts)>());
+}
+
 }; // namespace fpat
 
 #endif  // FORMAL_PATCH_ATOM_H
