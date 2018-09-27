@@ -200,8 +200,6 @@ bool match_exact(const AtomVec &avec) {
 
 template<typename...Ts, size_t...Ns>
 Result<std::tuple<Ts...>> as_tuple_impl(const AtomVec &avec, std::index_sequence<Ns...>) {
-  using RetType = std::tuple<Ts...>;
-
   auto check = {is_a<Ts>(avec[Ns])...};
 
   if (std::all_of(check.begin(), check.end(), [](bool x) -> bool { return x; })) {
