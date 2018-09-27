@@ -44,5 +44,10 @@ int main() {
 //  std::cout << *t1_ps << std::endl;  // t1_ps is different here!
 //  std::cout << *t2_ps << std::endl;
 
+//  AtomVec av = {Num(1100), make_str("lol", p), make_vec(10)};
+//  auto av_tup = as_tuple<Num, Str, Vec>(av);
+//  auto av_tup_exact_error = as_tuple_exact<Num, Str>(av);
+//  auto av_tup_wrong = as_tuple_exact<Num, Str, Dic>(av);
+
   return 0;
 }
