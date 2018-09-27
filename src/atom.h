@@ -173,7 +173,7 @@ Str atom_str_dyn(const Atom &atom, llvm::StringPool &pool) noexcept {
 ////
 
 template<typename...Ts, size_t...Ns>
-bool match_impl(std::index_sequence<Ns...>, const AtomVec &avec) {
+bool match_impl(const AtomVec &avec, std::index_sequence<Ns...>) {
   auto m = {is_a<Ts>(avec[Ns])...};
   return std::all_of(m.begin(), m.end(), [](bool x) { return x; });
 }
@@ -183,7 +183,7 @@ bool match(const AtomVec &avec) {
   if (avec.size() < sizeof...(Ts)) {
     return false;
   }
-  return match_impl<Ts...>(std::make_index_sequence<sizeof...(Ts)>(), avec);
+  return match_impl<Ts...>(avec, std::make_index_sequence<sizeof...(Ts)>());
 }
 
 template<typename...Ts>
@@ -191,8 +191,12 @@ bool match_exact(const AtomVec &avec) {
   if (avec.size() != sizeof...(Ts)) {
     return false;
   }
-  return match_impl<Ts...>(std::make_index_sequence<sizeof...(Ts)>(), avec);
+  return match_impl<Ts...>(avec, std::make_index_sequence<sizeof...(Ts)>());
 }
+
+////
+//// as_tuple and as_tuple_exact
+////
 
 template<typename...Ts, size_t...Ns>
 Result<std::tuple<Ts...>> as_tuple_impl(const AtomVec &avec, std::index_sequence<Ns...>) {
